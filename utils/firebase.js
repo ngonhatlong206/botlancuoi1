@@ -20,12 +20,7 @@ try {
     });
   }
 } catch (error) {
-  console.error('[ FIREBASE ] Lỗi kết nối Firebase:', {
-    message: error.message,
-    stack: error.stack,
-    code: error.code,
-    error: error
-  });
+  console.error('[ FIREBASE ] Lỗi kết nối Firebase:', error);
 }
 
 const db = admin.firestore();
