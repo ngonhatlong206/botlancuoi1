@@ -21,6 +21,14 @@ try {
   }
 } catch (error) {
   console.error('[ FIREBASE ] Lỗi kết nối Firebase:', error);
+  console.error('[ FIREBASE ] Lỗi kết nối Firebase (toString):', error && error.toString ? error.toString() : error);
+  if (error && error.stack) {
+    console.error('[ FIREBASE ] Stack:', error.stack);
+  }
+  // Log thêm các thuộc tính ẩn nếu có
+  try {
+    console.error('[ FIREBASE ] Lỗi kết nối Firebase (JSON):', JSON.stringify(error, Object.getOwnPropertyNames(error)));
+  } catch (e) {}
 }
 
 const db = admin.firestore();
