@@ -125,13 +125,6 @@ module.exports = function({
       Threads,
       Currencies,
   });
-  const handleCreateDatabase = require("./handle/handleCreateDatabase.js")({
-      api,
-      Threads,
-      Users,
-      Currencies,
-      models,
-  });
   //logger hiện console
   logger.loader(`Ping load toàn bộ commands và events • ${Date.now() - global.client.timeStart}ms •`, );
   //DEFINE DATLICH PATH
@@ -352,9 +345,6 @@ module.exports = function({
           case "message":
           case "message_reply":
           case "message_unsend":
-              handleCreateDatabase({
-                  event
-              });
               handleCommand({
                   event
               });

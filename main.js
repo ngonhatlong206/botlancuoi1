@@ -95,8 +95,6 @@ try {
 }
 catch { return logger.loader("Can't load file config!", "error") }
 
-const { Sequelize, sequelize } = require("./includes/database");
-
 /////////////////////////////////////////
 //========= Load language use =========//
 /////////////////////////////////////////
@@ -401,23 +399,46 @@ function onBot({ models: botModel }) {
           connect_mqtt();
       });
 }
-        //////////////////////////////////////////////
-        //========= Connecting to Database =========//
-        //////////////////////////////////////////////
 
-        (async() => {
-            try {
-                await sequelize.authenticate();
-                const authentication = {};
-                authentication.Sequelize = Sequelize;
-                authentication.sequelize = sequelize;
-                const models = require('./includes/database/model')(authentication);
-                logger(global.getText('mirai', 'successConnectDatabase'), '[ DATABASE ] ');
+// Xóa phần kết nối database cũ và thay thế bằng Firebase
+// //////////////////////////////////////////////
+// //========= Connecting to Database =========//
+// //////////////////////////////////////////////
 
-                const botData = {};
-                botData.models = models
-                onBot(botData);
-            } catch (error) { logger(global.getText('mirai', 'successConnectDatabase', JSON.stringify(error)), '[ DATABASE ] '); }
-        })()
+// (async() => {
+//     try {
+//         await sequelize.authenticate();
+//         const authentication = {};
+//         authentication.Sequelize = Sequelize;
+//         authentication.sequelize = sequelize;
+//         const models = require('./includes/database/model')(authentication);
+//         logger(global.getText('mirai', 'successConnectDatabase'), '[ DATABASE ] ');
+
+//         const botData = {};
+//         botData.models = models
+//         onBot(botData);
+//     } catch (error) { logger(global.getText('mirai', 'successConnectDatabase', JSON.stringify(error)), '[ DATABASE ] '); }
+// })()
+
+// Thay thế bằng Firebase
+//////////////////////////////////////////////
+//========= Connecting to Firebase =========//
+//////////////////////////////////////////////
+
+(async() => {
+    try {
+        // Khởi tạo Firebase
+        const { initializeFirebase } = require('./utils/firebase');
+        await initializeFirebase();
+        logger('Kết nối Firebase thành công!', '[ FIREBASE ] ');
+
+        const botData = {};
+        botData.models = {}; // Không cần models cho Firebase
+        onBot(botData);
+    } catch (error) { 
+        logger(`Lỗi kết nối Firebase: ${JSON.stringify(error)}`, '[ FIREBASE ] '); 
+    }
+})()
+
 process.on('unhandledRejection', (err, p) => {})
     .on('uncaughtException', err => { console.log(err); });
